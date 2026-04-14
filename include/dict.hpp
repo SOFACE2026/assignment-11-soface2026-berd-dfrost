@@ -15,6 +15,23 @@
 template <class K, class V>
 class Dict
 {
+private:
+    std::vector<K> key_v;
+    std::vector<V> val_v;
+    /*
+        Helper function to find the index of a key stored in the dictionary, 
+        returns -1 if not found.
+    */
+    int find(K key) const{
+        int idx = -1;
+        for(size_t i = 0; i < key_v.size(); i++){
+                if(key == key_v[i]){
+                    idx = i;
+                    break;
+                }
+            }
+        return idx;
+    }
 
 public:
     /**
@@ -26,6 +43,15 @@ public:
      */
     void set(K key, V val)
     {
+        int idx = find(key);
+        
+        if(idx > -1){
+            val_v.at(idx) = val;
+        }
+        else{
+            val_v.push_back(val);
+            key_v.push_back(key);
+        }
     }
 
     /**
@@ -37,7 +63,7 @@ public:
      */
     bool has(K key) const
     {
-        return false;
+        return (find(key) > -1);
     }
 
     /**
@@ -47,7 +73,7 @@ public:
      */
     size_t len()
     {
-        return 0;
+        return val_v.size();
     }
 
     /**
@@ -59,7 +85,11 @@ public:
      */
     std::optional<V> get(K key) const
     {
-        return {};
+        int idx = find(key);
+        if(idx > -1){
+            return val_v.at(idx);
+        }
+        return {std::nullopt};
     }
 
     /**
@@ -72,6 +102,11 @@ public:
      */
     void del(K key)
     {
+        int idx = find(key);
+        if(idx > -1){
+            val_v.erase(val_v.begin() + idx);
+            key_v.erase(key_v.begin() + idx);
+        }
     }
 
     /**
@@ -81,7 +116,7 @@ public:
      */
     std::vector<K> keys()
     {
-        return {};
+        return key_v;
     }
 
     /**
@@ -91,6 +126,6 @@ public:
      */
     std::vector<V> values()
     {
-        return {};
+        return val_v;
     }
 };
