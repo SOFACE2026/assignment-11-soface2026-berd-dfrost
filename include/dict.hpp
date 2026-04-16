@@ -24,8 +24,11 @@ private:
     */
     int find(K key) const{
         int idx = -1;
+        // Loop through keys
         for(size_t i = 0; i < key_v.size(); i++){
+                // Check if key is found
                 if(key == key_v[i]){
+                    // Set idx
                     idx = i;
                     break;
                 }
@@ -44,11 +47,12 @@ public:
     void set(K key, V val)
     {
         int idx = find(key);
-        
         if(idx > -1){
+            // Overwrite value if key exists
             val_v.at(idx) = val;
         }
         else{
+            // Push new key and its value onto respective vectors
             val_v.push_back(val);
             key_v.push_back(key);
         }
@@ -63,6 +67,7 @@ public:
      */
     bool has(K key) const
     {
+        // Checks if key exists using find helper
         return (find(key) > -1);
     }
 
@@ -73,6 +78,9 @@ public:
      */
     size_t len()
     {
+        // Value and key vector should always be the same size
+        assert(val_v.size() == key_v.size())
+        // Returns size of value vector
         return val_v.size();
     }
 
@@ -85,10 +93,13 @@ public:
      */
     std::optional<V> get(K key) const
     {
+        // Finds idx of key
         int idx = find(key);
         if(idx > -1){
+            // if key is found, returns respective value
             return val_v.at(idx);
         }
+        // not found, returns null
         return {std::nullopt};
     }
 
@@ -102,8 +113,10 @@ public:
      */
     void del(K key)
     {
+        // finds idx of key
         int idx = find(key);
         if(idx > -1){
+            // Erases key and its respective value if found
             val_v.erase(val_v.begin() + idx);
             key_v.erase(key_v.begin() + idx);
         }
@@ -116,6 +129,7 @@ public:
      */
     std::vector<K> keys()
     {
+        // returns vector of keys
         return key_v;
     }
 
@@ -126,6 +140,7 @@ public:
      */
     std::vector<V> values()
     {
+        // returns vector of values
         return val_v;
     }
 };
