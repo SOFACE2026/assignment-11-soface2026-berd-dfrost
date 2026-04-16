@@ -79,7 +79,7 @@ public:
     size_t len()
     {
         // Value and key vector should always be the same size
-        assert(val_v.size() == key_v.size())
+        assert(val_v.size() == key_v.size());
         // Returns size of value vector
         return val_v.size();
     }
