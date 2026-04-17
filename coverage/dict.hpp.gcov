@@ -1,0 +1,150 @@
+        -:    0:Source:../include/dict.hpp
+        -:    0:Graph:main.gcno
+        -:    0:Data:main.gcda
+        -:    0:Runs:1
+        -:    1:#pragma once
+        -:    2:#include <algorithm>
+        -:    3:#include <vector>
+        -:    4:#include <tuple>
+        -:    5:#include <iterator>
+        -:    6:#include <optional>
+        -:    7:
+        -:    8:/**
+        -:    9: * @brief Container used to store assoicate keys with values.
+        -:   10: * values can later be retrived using the corresponding key.
+        -:   11: * 
+        -:   12: * @tparam K type of the keys stored in the dictionary.
+        -:   13: * @tparam V type of the values assoicated with each key.
+        -:   14: */
+        -:   15:template <class K, class V>
+        -:   16:class Dict
+        -:   17:{
+        -:   18:private:
+        -:   19:    std::vector<K> key_v;
+        -:   20:    std::vector<V> val_v;
+        -:   21:    /*
+        -:   22:        Helper function to find the index of a key stored in the dictionary, 
+        -:   23:        returns -1 if not found.
+        -:   24:    */
+       14:   25:    int find(K key) const{
+       14:   26:        int idx = -1;
+        -:   27:        // Loop through keys
+       19:   28:        for(size_t i = 0; i < key_v.size(); i++){
+        -:   29:                // Check if key is found
+       12:   30:                if(key == key_v[i]){
+        -:   31:                    // Set idx
+        7:   32:                    idx = i;
+        7:   33:                    break;
+        -:   34:                }
+        -:   35:            }
+       14:   36:        return idx;
+        -:   37:    }
+        -:   38:
+        -:   39:public:
+        -:   40:    /**
+        -:   41:     * @brief Associates the key with the specified value.
+        -:   42:     * If the key is already in the dictionary its value is overwritten.
+        -:   43:     * 
+        -:   44:     * @param key key associated with the provided key.
+        -:   45:     * @param val value assoicated with the provided key.
+        -:   46:     */
+        4:   47:    void set(K key, V val)
+        -:   48:    {
+        4:   49:        int idx = find(key);
+        4:   50:        if(idx > -1){
+        -:   51:            // Overwrite value if key exists
+        1:   52:            val_v.at(idx) = val;
+        -:   53:        }
+        -:   54:        else{
+        -:   55:            // Push new key and its value onto respective vectors
+        3:   56:            val_v.push_back(val);
+        3:   57:            key_v.push_back(key);
+        -:   58:        }
+        4:   59:    }
+        -:   60:
+        -:   61:    /**
+        -:   62:     * @brief Determines if the key is defined in the dictionary.
+        -:   63:     * 
+        -:   64:     * @param key key for which to look for.
+        -:   65:     * @return true if the key is defined in the dictionary.
+        -:   66:     * @return false otherwise.
+        -:   67:     */
+        3:   68:    bool has(K key) const
+        -:   69:    {
+        -:   70:        // Checks if key exists using find helper
+        3:   71:        return (find(key) > -1);
+        -:   72:    }
+        -:   73:
+        -:   74:    /**
+        -:   75:     * @brief Returns the number of items in the dictionary.
+        -:   76:     * 
+        -:   77:     * @return the number of items in the dictionary.
+        -:   78:     */
+        6:   79:    size_t len()
+        -:   80:    {
+        -:   81:        // Value and key vector should always be the same size
+       6*:   82:        assert(val_v.size() == key_v.size());
+        -:   83:        // Returns size of value vector
+        6:   84:        return val_v.size();
+        -:   85:    }
+        -:   86:
+        -:   87:    /**
+        -:   88:     * @brief Get the value associated with the specified key.
+        -:   89:     * If no value is found std::nullopt is returned.
+        -:   90:     * 
+        -:   91:     * @param key key for which to locate value.
+        -:   92:     * @return value associated with key.
+        -:   93:     */
+        4:   94:    std::optional<V> get(K key) const
+        -:   95:    {
+        -:   96:        // Finds idx of key
+        4:   97:        int idx = find(key);
+        4:   98:        if(idx > -1){
+        -:   99:            // if key is found, returns respective value
+        3:  100:            return val_v.at(idx);
+        -:  101:        }
+        -:  102:        // not found, returns null
+        1:  103:        return {std::nullopt};
+        -:  104:    }
+        -:  105:
+        -:  106:    /**
+        -:  107:     * @brief Delete the specified key and its associated value
+        -:  108:     * from the dictionary.
+        -:  109:     * If the key is not present in the dictionary, nothing happens.
+        -:  110:     * 
+        -:  111:     * @param key A key currently present in the dictionary
+        -:  112:     * which will be deleted.
+        -:  113:     */
+        3:  114:    void del(K key)
+        -:  115:    {
+        -:  116:        // finds idx of key
+        3:  117:        int idx = find(key);
+        3:  118:        if(idx > -1){
+        -:  119:            // Erases key and its respective value if found
+        2:  120:            val_v.erase(val_v.begin() + idx);
+        2:  121:            key_v.erase(key_v.begin() + idx);
+        -:  122:        }
+        3:  123:    }
+        -:  124:
+        -:  125:    /**
+        -:  126:     * @brief List all keys of the dictionary.
+        -:  127:     * 
+        -:  128:     * @return vector of keys.
+        -:  129:     */
+        6:  130:    std::vector<K> keys()
+        -:  131:    {
+        -:  132:        // returns vector of keys
+        6:  133:        return key_v;
+        -:  134:    }
+        -:  135:
+        -:  136:    /**
+        -:  137:     * @brief List all values of the dictionary.
+        -:  138:     * 
+        -:  139:     * @return vector of values.
+        -:  140:     */
+        6:  141:    std::vector<V> values()
+        -:  142:    {
+        -:  143:        // returns vector of values
+        6:  144:        return val_v;
+        -:  145:    }
+        -:  146:};
